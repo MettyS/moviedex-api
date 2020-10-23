@@ -9,7 +9,8 @@ const movies = require('./movie-store.json');
 
 app.use(helmet());
 app.use(cors());
-app.use(morgan('common'));
+const morganSetting = process.env.NODE_ENV === 'production' ? 'tiny' : 'common'
+app.use(morgan(morganSetting))
 
 const validateBearerToken = function (req, res, next) {
   const token= process.env.API_TOKEN;
@@ -53,7 +54,18 @@ const handleGetMovies = function (req, res) {
 
 app.get('/movie', handleGetMovies)
 
+// 4 parameters in middleware, express knows to treat this as error handler
+app.use((error, req, res, next) => {
+  let response
+  if (process.env.NODE_ENV === 'production') {
+    response = { error: { message: 'server error' }}
+  } else {
+    response = { error }
+  }
+  res.status(500).json(response)
+})
+
+const PORT = process.env.PORT || 8000
 app.listen(8000, () => {
-  console.log('server is up on 8000');
-  console.log(process.env.API_TOKEN)
+  
 })
