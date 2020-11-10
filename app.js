@@ -29,24 +29,23 @@ const handleGetMovies = function (req, res) {
   const { genre='', country='', avg_vote=0 } = req.query;
   let responseMovies = movies;
 
-
   if(genre) {
-    responseMovies = responseMovies.filter(movie => {
-      return movie.genre.includes(genre);
-    })
+    responseMovies = responseMovies.filter(movie => 
+      movie.genre.toLowerCase().includes(genre.toLowerCase())
+    );
   }
 
   if(country) {
-    responseMovies = responseMovies.filter( movie => {
-      return movie.country.includes(country);
-    })
+    responseMovies = responseMovies.filter( movie => 
+      movie.country.toLowerCase().includes(country.toLowerCase())
+    );
   }
 
   if(avg_vote) {
     const avg_vote_num = parseFloat(avg_vote);
-    responseMovies = responseMovies.filter( movie => {
-      return movie.avg_vote >= avg_vote_num;
-    })
+    responseMovies = responseMovies.filter( movie => 
+      movie.avg_vote >= avg_vote_num
+    );
   }
   
   res.send(responseMovies);
